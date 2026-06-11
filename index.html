@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Жар-Гриль — шаурма, люля, шашлык на живом огне · Комсомольск-на-Амуре</title>
+<meta name="description" content="Жар-Гриль — уличная еда на живом огне в Комсомольске-на-Амуре. Шаурма, люля, шашлык, гриль-боксы. Самовывоз и доставка, ежедневно 10:00–23:00.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Caveat:wght@700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --charcoal:#16100d;
+    --charcoal-2:#1f1714;
+    --soot:#0d0908;
+    --ember:#ff5722;
+    --ember-2:#ff7a2e;
+    --amber:#ffb12e;
+    --terracotta:#c0451f;
+    --cream:#f7ede2;
+    --cream-dim:#cdbcab;
+    --ash:#8a7c70;
+    --line:rgba(247,237,226,.12);
+    --glow:0 0 0 1px rgba(255,87,34,.25), 0 18px 60px -20px rgba(255,87,34,.45);
+    --r:18px;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;overflow-x:hidden}
+  body{
+    font-family:'Manrope',system-ui,sans-serif;
+    background:var(--charcoal);
+    color:var(--cream);
+    line-height:1.6;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+  /* grain + smoke atmosphere */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{font-family:'Oswald',sans-serif;text-transform:uppercase;line-height:.98;letter-spacing:.01em}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px;position:relative;z-index:1}
+  .script{font-family:'Caveat',cursive;text-transform:none;color:var(--amber);font-weight:700}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:.5em;
+    font-family:'Oswald',sans-serif;text-transform:uppercase;font-weight:600;letter-spacing:.06em;
+    font-size:.92rem;padding:14px 26px;border-radius:999px;cursor:pointer;border:none;
+    transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s,background .25s;
+    min-height:48px;
+  }
+  .btn-primary{background:linear-gradient(135deg,var(--ember),var(--terracotta));color:#fff;box-shadow:var(--glow)}
+  .btn-primary:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 0 0 1px rgba(255,87,34,.4),0 22px 50px -16px rgba(255,87,34,.7)}
+  .btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--ember);color:var(--amber);transform:translateY(-2px)}
+  .btn:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+
+  /* ---------- header ---------- */
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:rgba(13,9,8,.72);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:'Oswald',sans-serif;font-weight:700;font-size:1.4rem;text-transform:uppercase;letter-spacing:.03em}
+  .logo .flame{width:30px;height:30px;flex:none}
+  .logo b{color:var(--ember)}
+  .navlinks{display:flex;gap:30px;align-items:center}
+  .navlinks a{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.85rem;letter-spacing:.08em;color:var(--cream-dim);transition:color .2s;position:relative}
+  .navlinks a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;background:var(--ember);transition:width .25s}
+  .navlinks a:hover{color:var(--cream)}
+  .navlinks a:hover::after{width:100%}
+  .nav-cta{display:flex;align-items:center;gap:14px}
+  .burger{display:none;background:none;border:none;cursor:pointer;width:44px;height:44px;flex-direction:column;justify-content:center;gap:5px;align-items:center}
+  .burger span{width:24px;height:2px;background:var(--cream);transition:.3s}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;padding:clamp(60px,9vw,120px) 0 clamp(70px,8vw,110px);overflow:hidden}
+  .hero-bg{position:absolute;inset:0;z-index:0;
+    background:
+      radial-gradient(1100px 520px at 78% -8%, rgba(255,177,46,.30), transparent 55%),
+      radial-gradient(820px 520px at 12% 110%, rgba(255,87,34,.34), transparent 60%),
+      linear-gradient(180deg,#1c1310 0%, var(--charcoal) 60%, var(--soot) 100%);
+  }
+  /* ember sparks */
+  .sparks{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .spark{position:absolute;bottom:-12px;width:5px;height:5px;border-radius:50%;
+    background:radial-gradient(circle,var(--amber),var(--ember) 70%,transparent);
+    filter:blur(.3px);opacity:0;animation:rise linear infinite}
+  @keyframes rise{0%{transform:translateY(0) scale(1);opacity:0}10%{opacity:.9}90%{opacity:.5}100%{transform:translateY(-86vh) scale(.4);opacity:0}}
+  .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.15fr .85fr;gap:46px;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:.78rem;color:var(--amber);border:1px solid var(--line);padding:7px 16px;border-radius:999px;background:rgba(255,177,46,.06)}
+  .dotpulse{width:8px;height:8px;border-radius:50%;background:var(--ember);box-shadow:0 0 0 0 rgba(255,87,34,.7);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,87,34,.6)}70%{box-shadow:0 0 0 12px rgba(255,87,34,0)}100%{box-shadow:0 0 0 0 rgba(255,87,34,0)}}
+  .hero h1{font-size:clamp(3rem,8.5vw,6.4rem);font-weight:700;margin:22px 0 0;letter-spacing:-.01em}
+  .hero h1 .hot{
+    background:linear-gradient(100deg,var(--amber),var(--ember) 45%,var(--terracotta));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 38px rgba(255,87,34,.35);
+  }
+  .hero p.lead{font-size:clamp(1.05rem,2.2vw,1.28rem);color:var(--cream-dim);margin:22px 0 32px;max-width:30ch}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+  .hero-meta{margin-top:34px;display:flex;gap:26px;flex-wrap:wrap;font-size:.9rem;color:var(--ash)}
+  .hero-meta b{color:var(--cream);font-family:'Oswald',sans-serif;font-size:1.05rem}
+
+  /* hero plate visual (pure css/svg) */
+  .plate{position:relative;aspect-ratio:1;max-width:420px;margin:0 auto;width:100%}
+  .plate .disc{position:absolute;inset:0;border-radius:50%;
+    background:radial-gradient(circle at 38% 32%, #3a2a22, #241915 60%, #160f0c);
+    box-shadow:inset 0 0 60px rgba(0,0,0,.6), 0 30px 80px -30px rgba(255,87,34,.6), 0 0 0 10px rgba(247,237,226,.04);
+    animation:spin 60s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .plate .grill-lines{position:absolute;inset:14%;border-radius:50%;opacity:.5;
+    background:repeating-linear-gradient(48deg,transparent 0 16px,rgba(0,0,0,.45) 16px 19px)}
+  .plate .food{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(5rem,17vw,9.5rem);
+    filter:drop-shadow(0 14px 26px rgba(0,0,0,.55));animation:bob 5s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+  .plate .smoke{position:absolute;left:50%;top:8%;width:46px;height:46px;transform:translateX(-50%);
+    background:radial-gradient(circle,rgba(247,237,226,.5),transparent 65%);border-radius:50%;
+    filter:blur(8px);opacity:0;animation:smoke 4s ease-in infinite}
+  .plate .smoke.s2{animation-delay:1.3s;left:42%}
+  .plate .smoke.s3{animation-delay:2.6s;left:58%}
+  @keyframes smoke{0%{transform:translate(-50%,0) scale(.6);opacity:0}30%{opacity:.5}100%{transform:translate(-50%,-120px) scale(1.6);opacity:0}}
+  .price-tag{position:absolute;right:-6px;bottom:18px;background:linear-gradient(135deg,var(--ember),var(--terracotta));
+    color:#fff;font-family:'Oswald',sans-serif;text-transform:uppercase;border-radius:16px;padding:12px 18px;
+    box-shadow:0 16px 40px -12px rgba(255,87,34,.8);transform:rotate(-7deg);line-height:1}
+  .price-tag small{display:block;font-size:.62rem;letter-spacing:.14em;opacity:.85;margin-bottom:4px}
+  .price-tag span{font-size:1.55rem;font-weight:700}
+
+  /* ---------- marquee ---------- */
+  .marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--soot);overflow:hidden;padding:13px 0}
+  .marquee-track{display:flex;gap:42px;white-space:nowrap;width:max-content;animation:scroll 26s linear infinite;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--cream-dim);font-size:.95rem}
+  .marquee-track span{display:inline-flex;align-items:center;gap:42px}
+  .marquee b{color:var(--amber)}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+
+  /* ---------- sections ---------- */
+  section{position:relative;z-index:1}
+  .pad{padding:clamp(64px,9vw,112px) 0}
+  .sec-head{margin-bottom:46px;max-width:620px}
+  .sec-head .script{font-size:1.7rem;display:block;margin-bottom:4px}
+  .sec-head h2{font-size:clamp(2.1rem,5.5vw,3.4rem);font-weight:700}
+  .sec-head p{color:var(--cream-dim);margin-top:14px}
+
+  /* ---------- menu ---------- */
+  .menu-tabs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:30px}
+  .tab{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:.82rem;padding:9px 18px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--cream-dim);cursor:pointer;transition:.2s;min-height:42px}
+  .tab.active,.tab:hover{background:var(--ember);border-color:var(--ember);color:#fff}
+  .tab:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+  .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+  .card{position:relative;border-radius:var(--r);background:linear-gradient(180deg,var(--charcoal-2),#140e0b);border:1px solid var(--line);overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s}
+  .card:hover{transform:translateY(-6px);border-color:rgba(255,87,34,.4);box-shadow:0 26px 60px -28px rgba(255,87,34,.55)}
+  .card-vis{height:148px;position:relative;display:grid;place-items:center;font-size:4.4rem;overflow:hidden}
+  .card-vis .heat{position:absolute;inset:0;opacity:.9}
+  .card-vis .emoji{position:relative;z-index:1;filter:drop-shadow(0 10px 16px rgba(0,0,0,.5));transition:transform .35s}
+  .card:hover .card-vis .emoji{transform:scale(1.12) rotate(-4deg)}
+  .v-shawarma{background:radial-gradient(120% 120% at 30% 10%,#ff8a3d,#c0451f 55%,#5a1c0c)}
+  .v-spicy{background:radial-gradient(120% 120% at 70% 10%,#ff5722,#a4160a 60%,#3d0a05)}
+  .v-lula{background:radial-gradient(120% 120% at 40% 0%,#ffb12e,#c0451f 65%,#4a1407)}
+  .v-shashlik{background:radial-gradient(120% 120% at 60% 10%,#ff7a2e,#9c3010 60%,#3a1206)}
+  .v-box{background:radial-gradient(120% 120% at 50% 0%,#ffc14d,#d4641f 55%,#4a1c08)}
+  .v-veg{background:radial-gradient(120% 120% at 50% 0%,#ffd27a,#c87a1f 60%,#42230a)}
+  .card-body{padding:18px 18px 20px}
+  .card-body h3{font-size:1.22rem;font-weight:600;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .card-body h3 .pr{font-family:'Oswald',sans-serif;color:var(--amber);font-size:1.15rem;white-space:nowrap}
+  .card-body p{font-size:.92rem;color:var(--cream-dim);margin-top:8px}
+  .tagrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+  .tagrow span{font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ash);border:1px solid var(--line);padding:4px 10px;border-radius:999px}
+  .badge-hot{position:absolute;top:12px;right:12px;z-index:2;background:rgba(13,9,8,.7);backdrop-filter:blur(4px);border:1px solid rgba(255,87,34,.5);color:var(--amber);font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.66rem;letter-spacing:.1em;padding:5px 10px;border-radius:999px}
+
+  /* ---------- delivery ---------- */
+  .delivery{background:linear-gradient(180deg,var(--soot),var(--charcoal))}
+  .deliv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .deliv-card{background:linear-gradient(180deg,var(--charcoal-2),#140e0b);border:1px solid var(--line);border-radius:var(--r);padding:30px 24px;position:relative;overflow:hidden}
+  .deliv-card .ico{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(255,87,34,.18),rgba(255,177,46,.1));border:1px solid rgba(255,87,34,.3);font-size:1.6rem;margin-bottom:16px}
+  .deliv-card h3{font-size:1.25rem;font-weight:600;margin-bottom:8px}
+  .deliv-card p{color:var(--cream-dim);font-size:.93rem}
+  .deliv-card b{color:var(--amber)}
+  .zone-note{margin-top:24px;font-size:.86rem;color:var(--ash);border-left:3px solid var(--ember);padding-left:14px}
+
+  /* ---------- why ---------- */
+  .why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .why-card{padding:28px 22px;border-radius:var(--r);border:1px solid var(--line);background:rgba(247,237,226,.02);transition:.3s}
+  .why-card:hover{background:rgba(255,87,34,.05);border-color:rgba(255,87,34,.35)}
+  .why-card .num{font-family:'Oswald',sans-serif;font-size:2.6rem;font-weight:700;color:transparent;-webkit-text-stroke:1.5px var(--terracotta);line-height:1}
+  .why-card h3{font-size:1.12rem;font-weight:600;margin:14px 0 8px}
+  .why-card p{font-size:.9rem;color:var(--cream-dim)}
+
+  /* ---------- reviews ---------- */
+  .reviews{background:linear-gradient(180deg,var(--charcoal),var(--soot))}
+  .rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .rev{background:linear-gradient(180deg,var(--charcoal-2),#140e0b);border:1px solid var(--line);border-radius:var(--r);padding:28px 24px;position:relative}
+  .rev .stars{color:var(--amber);font-size:1rem;letter-spacing:3px;margin-bottom:14px}
+  .rev p{font-size:1rem;line-height:1.6}
+  .rev .who{margin-top:18px;display:flex;align-items:center;gap:12px}
+  .rev .av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-family:'Oswald',sans-serif;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--ember),var(--terracotta))}
+  .rev .who b{display:block;font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.92rem;letter-spacing:.03em}
+  .rev .who small{color:var(--ash)}
+  .rev .quote{position:absolute;top:16px;right:22px;font-family:'Oswald',sans-serif;font-size:4rem;color:rgba(255,87,34,.14);line-height:1}
+
+  /* ---------- contacts ---------- */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:stretch}
+  .info-block{display:flex;flex-direction:column;gap:18px}
+  .info-row{display:flex;gap:14px;align-items:flex-start;padding:18px 20px;border:1px solid var(--line);border-radius:14px;background:rgba(247,237,226,.02)}
+  .info-row .ic{font-size:1.4rem;flex:none}
+  .info-row b{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.05em;font-size:.78rem;color:var(--ash);display:block;margin-bottom:3px}
+  .info-row a,.info-row span{font-size:1.05rem;color:var(--cream)}
+  /* map placeholder */
+  .map{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);min-height:200px;flex:1;
+    background:
+      linear-gradient(115deg,rgba(255,87,34,.07),transparent 60%),
+      repeating-linear-gradient(0deg,#1a120f 0 38px,#16100d 38px 40px),
+      repeating-linear-gradient(90deg,#1a120f 0 38px,#16100d 38px 40px);}
+  .map .road{position:absolute;background:rgba(247,237,226,.07)}
+  .map .r1{top:42%;left:0;right:0;height:14px}
+  .map .r2{top:0;bottom:0;left:34%;width:14px}
+  .map .r3{top:0;bottom:0;left:71%;width:8px;background:rgba(247,237,226,.05)}
+  .map .pin{position:absolute;top:42%;left:34%;transform:translate(-50%,-100%);z-index:2;text-align:center}
+  .map .pin .dot{width:22px;height:22px;border-radius:50% 50% 50% 0;background:linear-gradient(135deg,var(--ember),var(--terracotta));transform:rotate(-45deg);margin:0 auto;box-shadow:0 0 0 6px rgba(255,87,34,.2);animation:pulse 2.4s infinite}
+  .map .pin small{display:inline-block;margin-top:6px;background:rgba(13,9,8,.85);padding:3px 9px;border-radius:6px;font-size:.72rem;color:var(--cream);white-space:nowrap}
+  .map .maplabel{position:absolute;bottom:10px;left:12px;font-size:.7rem;color:var(--ash);background:rgba(13,9,8,.7);padding:3px 8px;border-radius:6px}
+
+  /* order form */
+  .order-form{background:linear-gradient(180deg,var(--charcoal-2),#140e0b);border:1px solid var(--line);border-radius:var(--r);padding:28px 26px}
+  .order-form h3{font-size:1.5rem;font-weight:600;margin-bottom:6px}
+  .order-form .fnote{color:var(--cream-dim);font-size:.9rem;margin-bottom:22px}
+  .field{margin-bottom:16px}
+  .field label{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.72rem;letter-spacing:.08em;color:var(--ash);display:block;margin-bottom:7px}
+  .field input,.field select,.field textarea{width:100%;background:var(--soot);border:1px solid var(--line);border-radius:11px;color:var(--cream);padding:13px 15px;font-family:inherit;font-size:.98rem;transition:border-color .2s,box-shadow .2s;min-height:48px}
+  .field textarea{min-height:84px;resize:vertical}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--ember);box-shadow:0 0 0 3px rgba(255,87,34,.18)}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .order-form .btn-primary{width:100%;justify-content:center;margin-top:6px}
+  .form-ok{display:none;margin-top:16px;padding:14px 16px;border-radius:11px;background:rgba(255,177,46,.1);border:1px solid rgba(255,177,46,.4);color:var(--amber);font-size:.92rem}
+  .form-ok.show{display:block;animation:fadeUp .5s}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--soot);border-top:1px solid var(--line);padding:54px 0 30px}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:30px;margin-bottom:34px}
+  .foot-grid .logo{margin-bottom:14px}
+  .foot-grid p{color:var(--cream-dim);font-size:.92rem;max-width:34ch}
+  .foot-col h4{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:.82rem;letter-spacing:.1em;color:var(--ash);margin-bottom:14px}
+  .foot-col a,.foot-col span{display:block;color:var(--cream-dim);font-size:.92rem;margin-bottom:9px;transition:color .2s}
+  .foot-col a:hover{color:var(--amber)}
+  .foot-bottom{border-top:1px solid var(--line);padding-top:22px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center}
+  .foot-bottom .copy{font-size:.82rem;color:var(--ash)}
+  .demo-line{font-size:.72rem;color:#6b5e54;letter-spacing:.02em}
+
+  /* demo badge */
+  .demo-badge{position:fixed;right:16px;bottom:16px;z-index:80;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:.66rem;color:var(--cream);background:rgba(13,9,8,.78);backdrop-filter:blur(8px);border:1px solid rgba(255,87,34,.4);padding:8px 14px;border-radius:999px;box-shadow:0 10px 30px -12px rgba(0,0,0,.7)}
+  .demo-badge::before{content:"●";color:var(--ember);margin-right:7px}
+
+  /* reveal anim */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.8,.3,1),transform .7s cubic-bezier(.2,.8,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  /* ---------- responsive ---------- */
+  @media(max-width:920px){
+    .hero-grid{grid-template-columns:1fr;gap:40px}
+    .plate{max-width:340px;order:-1}
+    .why-grid{grid-template-columns:repeat(2,1fr)}
+    .deliv-grid,.rev-grid{grid-template-columns:1fr}
+    .contact-grid{grid-template-columns:1fr}
+    .foot-grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:680px){
+    .navlinks{display:none}
+    .burger{display:flex}
+    .navlinks.open{display:flex;position:absolute;top:68px;left:0;right:0;flex-direction:column;background:rgba(13,9,8,.97);backdrop-filter:blur(12px);padding:22px;gap:20px;border-bottom:1px solid var(--line)}
+    .nav-cta .btn-ghost{display:none}
+    .nav-cta{gap:8px}
+    .nav-cta .btn-primary{padding:11px 18px;font-size:.84rem}
+    .logo{font-size:1.2rem}
+  }
+  @media(max-width:480px){
+    .why-grid{grid-template-columns:1fr}
+    .foot-grid{grid-template-columns:1fr}
+    .form-row{grid-template-columns:1fr}
+    .hero h1{font-size:clamp(2.6rem,12vw,3.6rem)}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="logo" aria-label="Жар-Гриль — на главную">
+      <svg class="flame" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M16 2c2 5-3 7-3 11a3 3 0 006 0c0-1 0-2-1-3 4 2 7 6 7 11a9 9 0 11-18 0c0-7 6-9 9-19z" fill="url(#fg)"/>
+        <defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb12e"/><stop offset=".55" stop-color="#ff5722"/><stop offset="1" stop-color="#c0451f"/></linearGradient></defs>
+      </svg>
+      Жар<b>-</b>Гриль
+    </a>
+    <nav class="navlinks" id="nav">
+      <a href="#menu">Меню</a>
+      <a href="#delivery">Доставка</a>
+      <a href="#why">Почему вкусно</a>
+      <a href="#reviews">Отзывы</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="tel:+74217000000" class="btn btn-ghost">+7 (4217) 00-00-00</a>
+      <a href="#order" class="btn btn-primary">Заказать</a>
+      <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="sparks" id="sparks" aria-hidden="true"></div>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow"><span class="dotpulse" aria-hidden="true"></span> Живой огонь · Комсомольск-на-Амуре</span>
+      <h1>Сочно. <br><span class="hot">На углях.</span><br>До дымка.</h1>
+      <p class="lead">Шаурма, люля и шашлык, которые жарятся на настоящем мангале. Маринуем сами, собираем при тебе.</p>
+      <div class="hero-cta">
+        <a href="#menu" class="btn btn-primary">Смотреть меню 🔥</a>
+        <a href="#delivery" class="btn btn-ghost">Доставка</a>
+      </div>
+      <div class="hero-meta">
+        <div><b>10:00–23:00</b><br>ежедневно</div>
+        <div><b>от 30 мин</b><br>доставка по городу</div>
+        <div><b>пр. Мира, 00</b><br>самовывоз</div>
+      </div>
+    </div>
+    <div class="hero-vis">
+      <div class="plate">
+        <div class="disc" aria-hidden="true"></div>
+        <div class="grill-lines" aria-hidden="true"></div>
+        <div class="smoke" aria-hidden="true"></div>
+        <div class="smoke s2" aria-hidden="true"></div>
+        <div class="smoke s3" aria-hidden="true"></div>
+        <div class="food" role="img" aria-label="Сочный шашлык с гриля">🍢</div>
+        <div class="price-tag" aria-hidden="true"><small>шашлык от</small><span>320 ₽</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Шаурма классик <b>·</b> Люля на углях <b>·</b> Шашлык из шейки <b>·</b> Гриль-боксы <b>·</b> Острая шаурма <b>·</b> Свежий лаваш <b>·</b> </span>
+    <span>Шаурма классик <b>·</b> Люля на углях <b>·</b> Шашлык из шейки <b>·</b> Гриль-боксы <b>·</b> Острая шаурма <b>·</b> Свежий лаваш <b>·</b> </span>
+  </div>
+</div>
+
+<!-- MENU -->
+<section class="pad" id="menu">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="script">наше меню</span>
+      <h2>Жарим, пока ты смотришь</h2>
+      <p>Всё готовится на заказ. Цены и состав — честно, без сюрпризов на кассе.</p>
+    </div>
+
+    <div class="menu-tabs reveal" role="tablist" aria-label="Категории меню">
+      <button class="tab active" data-cat="all" role="tab" aria-selected="true">Всё</button>
+      <button class="tab" data-cat="shawarma" role="tab" aria-selected="false">Шаурма</button>
+      <button class="tab" data-cat="grill" role="tab" aria-selected="false">Гриль</button>
+      <button class="tab" data-cat="box" role="tab" aria-selected="false">Боксы</button>
+    </div>
+
+    <div class="menu-grid">
+
+      <article class="card reveal" data-cat="shawarma">
+        <div class="card-vis"><div class="heat v-shawarma" aria-hidden="true"></div><span class="emoji" role="img" aria-label="Шаурма классическая">🌯</span></div>
+        <div class="card-body">
+          <h3>Шаурма Классик <span class="pr">260 ₽</span></h3>
+          <p>Куриное бедро с углей, свежий лаваш, помидор, огурец, лук и фирменный чесночный соус. Сытная, без лишней капусты.</p>
+          <div class="tagrow"><span>курица</span><span>~420 г</span></div>
+        </div>
+      </article>
+
+      <article class="card reveal" data-cat="shawarma">
+        <span class="badge-hot" aria-hidden="true">🌶 остро</span>
+        <div class="card-vis"><div class="heat v-spicy" aria-hidden="true"></div><span class="emoji" role="img" aria-label="Острая шаурма">🌯</span></div>
+        <div class="card-body">
+          <h3>Шаурма Острая <span class="pr">290 ₽</span></h3>
+          <p>Та же база, но с халапеньо, томлёным соусом на аджике и копчёной паприкой. Для тех, кто любит, чтобы пробивало.</p>
+          <div class="tagrow"><span>курица</span><span>острая</span><span>~430 г</span></div>
+        </div>
+      </article>
+
+      <article class="card reveal" data-cat="grill">
+        <div class="card-vis"><div class="heat v-lula" aria-hidden="true"></div><span class="emoji" role="img" aria-label="Люля-кебаб">🥙</span></div>
+        <div class="card-body">
+          <h3>Люля на углях <span class="pr">340 ₽</span></h3>
+          <p>Рубленая говядина с бараниной и луком, вручную на шампуре. Подаём на лаваше с зеленью и маринованным луком.</p>
+          <div class="tagrow"><span>говядина+баранина</span><span>2 шт</span></div>
+        </div>
+      </article>
+
+      <article class="card reveal" data-cat="grill">
+        <div class="card-vis"><div class="heat v-shashlik" aria-hidden="true"></div><span class="emoji" role="img" aria-label="Шашлык">🍢</span></div>
+        <div class="card-body">
+          <h3>Шашлык из шейки <span class="pr">390 ₽</span></h3>
+          <p>Свиная шейка в маринаде на минералке и луке сутки. Мягкая, с поджаристой корочкой. С соусом и лепёшкой.</p>
+          <div class="tagrow"><span>свинина</span><span>~300 г</span></div>
+        </div>
+      </article>
+
+      <article class="card reveal" data-cat="box">
+        <div class="card-vis"><div class="heat v-box" aria-hidden="true"></div><span class="emoji" role="img" aria-label="Гриль-бокс">🍱</span></div>
+        <div class="card-body">
+          <h3>Гриль-бокс «Жар» <span class="pr">450 ₽</span></h3>
+          <p>Шашлык + люля + куриное филе, картофель по-деревенски, свежие овощи и два соуса. Полноценный обед в одной коробке.</p>
+          <div class="tagrow"><span>микс мяса</span><span>картофель</span><span>сытно</span></div>
+        </div>
+      </article>
+
+      <article class="card reveal" data-cat="box">
+        <div class="card-vis"><div class="heat v-veg" aria-hidden="true"></div><span class="emoji" role="img" aria-label="Овощи гриль">🫑</span></div>
+        <div class="card-body">
+          <h3>Бокс «Овощи-гриль» <span class="pr">320 ₽</span></h3>
+          <p>Баклажан, цукини, перец и шампиньоны на углях, киноа, свежая зелень и соус на йогурте. Лёгкий, но с тем самым дымком.</p>
+          <div class="tagrow"><span>без мяса</span><span>овощи</span></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- DELIVERY -->
+<section class="pad delivery" id="delivery">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="script">привезём горячим</span>
+      <h2>Доставка и самовывоз</h2>
+      <p>Готовим на заказ и отдаём с пылу с жару. Можно забрать самому или дождаться курьера.</p>
+    </div>
+    <div class="deliv-grid">
+      <div class="deliv-card reveal">
+        <div class="ico" aria-hidden="true">🛵</div>
+        <h3>Доставка по городу</h3>
+        <p>Среднее время — <b>от 30 до 60 минут</b> в зависимости от района и загрузки. Привозим в термосумке, чтобы дошло горячим.</p>
+      </div>
+      <div class="deliv-card reveal">
+        <div class="ico" aria-hidden="true">🥡</div>
+        <h3>Самовывоз</h3>
+        <p>Закажи по телефону — соберём за <b>10–15 минут</b>. Забираешь на пр. Мира, 00, без очереди и ожидания.</p>
+      </div>
+      <div class="deliv-card reveal">
+        <div class="ico" aria-hidden="true">💳</div>
+        <h3>Оплата как удобно</h3>
+        <p>Наличными курьеру, картой или переводом. <b>Бесплатная доставка</b> от заказа на 900 ₽ по центральным районам.</p>
+      </div>
+    </div>
+    <p class="zone-note reveal">Зона доставки: Центральный и Ленинский округа Комсомольска-на-Амуре. По дальним районам — уточняйте стоимость по телефону.</p>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="pad" id="why">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="script">почему вкусно</span>
+      <h2>Дело в огне и руках</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <div class="num" aria-hidden="true">01</div>
+        <h3>На живом огне</h3>
+        <p>Не сухой гриль-аппарат, а настоящий мангал на углях. Отсюда тот самый дымок и корочка.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="num" aria-hidden="true">02</div>
+        <h3>Маринуем сами</h3>
+        <p>Мясо маринуется у нас, без готовых смесей. Свинина — сутки, курица — по своему рецепту.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="num" aria-hidden="true">03</div>
+        <h3>Свежее каждый день</h3>
+        <p>Овощи нарезаем утром, лаваш привозят ежедневно. Что не разошлось — не идёт в завтра.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="num" aria-hidden="true">04</div>
+        <h3>Собираем при тебе</h3>
+        <p>Видишь весь процесс на открытой кухне. Никаких заранее завёрнутых полуфабрикатов.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="pad reviews" id="reviews">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="script">говорят гости</span>
+      <h2>Отзывы</h2>
+    </div>
+    <div class="rev-grid">
+      <div class="rev reveal">
+        <span class="quote" aria-hidden="true">”</span>
+        <div class="stars" role="img" aria-label="Оценка 5 из 5">★★★★★</div>
+        <p>Брал гриль-бокс на обед — наелся за глаза, мясо реально сочное и с дымком. Привезли горячим, упаковано аккуратно.</p>
+        <div class="who"><div class="av" aria-hidden="true">А</div><div><b>Алексей</b><small>самовывоз</small></div></div>
+      </div>
+      <div class="rev reveal">
+        <span class="quote" aria-hidden="true">”</span>
+        <div class="stars" role="img" aria-label="Оценка 5 из 5">★★★★★</div>
+        <p>Острая шаурма — то, что надо. Не «для галочки» острая, а по-настоящему. Соус чесночный отдельный респект.</p>
+        <div class="who"><div class="av" aria-hidden="true">М</div><div><b>Марина</b><small>доставка</small></div></div>
+      </div>
+      <div class="rev reveal">
+        <span class="quote" aria-hidden="true">”</span>
+        <div class="stars" role="img" aria-label="Оценка 5 из 5">★★★★★</div>
+        <p>Заказывали люля на компанию. Приехало быстро, всё тёплое. Видно, что лепят руками, а не из заморозки. Будем брать ещё.</p>
+        <div class="who"><div class="av" aria-hidden="true">Д</div><div><b>Дмитрий</b><small>доставка</small></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTS + ORDER -->
+<section class="pad" id="contacts">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="script">мы рядом</span>
+      <h2>Контакты и заказ</h2>
+      <p>Звони или оставь заявку — перезвоним, уточним детали и начнём жарить.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="info-block reveal">
+        <div class="info-row">
+          <span class="ic" aria-hidden="true">📞</span>
+          <div><b>Телефон</b><a href="tel:+74217000000">+7 (4217) 00-00-00</a></div>
+        </div>
+        <div class="info-row">
+          <span class="ic" aria-hidden="true">📍</span>
+          <div><b>Адрес</b><span>Комсомольск-на-Амуре, пр. Мира, 00</span></div>
+        </div>
+        <div class="info-row">
+          <span class="ic" aria-hidden="true">🕒</span>
+          <div><b>Часы работы</b><span>Ежедневно 10:00–23:00</span></div>
+        </div>
+        <div class="map" role="img" aria-label="Схема расположения: пересечение проспекта Мира, точка Жар-Гриль">
+          <div class="road r1" aria-hidden="true"></div>
+          <div class="road r2" aria-hidden="true"></div>
+          <div class="road r3" aria-hidden="true"></div>
+          <div class="pin" aria-hidden="true"><div class="dot"></div><small>Жар-Гриль · пр. Мира, 00</small></div>
+          <span class="maplabel">Схема · карта условная</span>
+        </div>
+      </div>
+
+      <form class="order-form reveal" id="order" novalidate>
+        <h3>Оформить заказ</h3>
+        <p class="fnote">Это демонстрационная форма — заявка никуда не отправляется.</p>
+        <div class="field">
+          <label for="fname">Имя</label>
+          <input type="text" id="fname" name="fname" placeholder="Как к вам обращаться" autocomplete="name" required>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="fphone">Телефон</label>
+            <input type="tel" id="fphone" name="fphone" placeholder="+7 ___ ___ __ __" autocomplete="tel" required>
+          </div>
+          <div class="field">
+            <label for="ftype">Как получить</label>
+            <select id="ftype" name="ftype">
+              <option>Доставка</option>
+              <option>Самовывоз</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="forder">Что приготовить</label>
+          <textarea id="forder" name="forder" placeholder="Например: 1 шаурма классик, 1 шашлык, соус острый"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить заявку 🔥</button>
+        <div class="form-ok" id="formOk" role="status">Спасибо! В реальной версии заявка ушла бы нам — это демо-концепт.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="#top" class="logo" aria-label="Жар-Гриль">
+          <svg class="flame" viewBox="0 0 32 32" aria-hidden="true"><use href="#fg-use"/><path d="M16 2c2 5-3 7-3 11a3 3 0 006 0c0-1 0-2-1-3 4 2 7 6 7 11a9 9 0 11-18 0c0-7 6-9 9-19z" fill="#ff5722"/></svg>
+          Жар<b style="color:var(--ember)">-</b>Гриль
+        </a>
+        <p>Уличная еда на живом огне в Комсомольске-на-Амуре. Жарим с душой, отдаём горячим.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Меню</h4>
+        <a href="#menu">Шаурма</a>
+        <a href="#menu">Гриль и люля</a>
+        <a href="#menu">Гриль-боксы</a>
+        <a href="#delivery">Доставка</a>
+      </div>
+      <div class="foot-col">
+        <h4>Контакты</h4>
+        <a href="tel:+74217000000">+7 (4217) 00-00-00</a>
+        <span>пр. Мира, 00</span>
+        <span>Ежедневно 10:00–23:00</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span class="copy">© 2026 Жар-Гриль. Все права защищены.</span>
+      <span class="demo-line">Демонстрационный концепт · собран студией WebStudio (webstudiokms.ru) · бизнес вымышленный</span>
+    </div>
+  </div>
+</footer>
+
+<a href="#menu" class="demo-badge" aria-label="Это демонстрационный концепт">демо-концепт</a>
+
+<script>
+  // burger menu
+  const burger=document.getElementById('burger'), nav=document.getElementById('nav');
+  burger.addEventListener('click',()=>{
+    const open=nav.classList.toggle('open');
+    burger.setAttribute('aria-expanded',open);
+  });
+  nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+    nav.classList.remove('open');burger.setAttribute('aria-expanded','false');
+  }));
+
+  // menu filter tabs
+  const tabs=document.querySelectorAll('.tab'), cards=document.querySelectorAll('.card');
+  tabs.forEach(tab=>tab.addEventListener('click',()=>{
+    tabs.forEach(t=>{t.classList.remove('active');t.setAttribute('aria-selected','false');});
+    tab.classList.add('active');tab.setAttribute('aria-selected','true');
+    const cat=tab.dataset.cat;
+    cards.forEach(c=>{
+      const show=cat==='all'||c.dataset.cat===cat;
+      c.style.display=show?'':'none';
+    });
+  }));
+
+  // order form (demo only)
+  const form=document.getElementById('order'), ok=document.getElementById('formOk');
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    ok.classList.add('show');
+    form.querySelector('button').textContent='Принято ✓';
+    setTimeout(()=>{ok.classList.remove('show');form.querySelector('button').innerHTML='Отправить заявку 🔥';form.reset();},4200);
+  });
+
+  // ember sparks
+  const sparks=document.getElementById('sparks');
+  if(sparks && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    for(let i=0;i<22;i++){
+      const s=document.createElement('span');
+      s.className='spark';
+      s.style.left=Math.random()*100+'%';
+      s.style.animationDuration=(5+Math.random()*7)+'s';
+      s.style.animationDelay=(Math.random()*8)+'s';
+      const sc=.6+Math.random()*1.4;
+      s.style.transform='scale('+sc+')';
+      sparks.appendChild(s);
+    }
+  }
+
+  // scroll reveal
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+  },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{
+    el.style.transitionDelay=(Math.min(i%6,5)*60)+'ms';
+    io.observe(el);
+  });
+</script>
+</body>
+</html>
